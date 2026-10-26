@@ -1,4 +1,3 @@
-
 from werkzeug.security import generate_password_hash
 
 from app.extensions import db
@@ -38,9 +37,9 @@ def cadastrar_usuario(dados):
         return None, "A senha deve ter entre 8 e 128 caracteres."
 
     nome = nome.strip()
-    email = email.strip().lower()
-    telefone = telefone.strip()
     idade = int(idade)
+    telefone = telefone.strip()
+    email = email.strip().lower()
 
     usuario_existente = db.session.execute(
         db.select(Usuario).where(Usuario.email == email)

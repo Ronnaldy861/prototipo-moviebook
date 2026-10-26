@@ -1,9 +1,9 @@
+
 import os
 
 from dotenv import load_dotenv
 from flask import Flask, jsonify
 from werkzeug.exceptions import BadRequest
-
 
 from app.extensions import cors, db, migrate
 
@@ -34,6 +34,12 @@ def create_app(test_config=None):
     # Registra os modelos no SQLAlchemy.
     import app.models  # noqa: F401
 
+    # Registra as rotas da API.
+    from app.routes.usuarios import usuarios_bp
+
+    flask_app.register_blueprint(usuarios_bp)
+
+    # Configura o acesso do frontend à API.
     cors.init_app(
         flask_app,
         resources={
