@@ -118,3 +118,43 @@ def test_cadastro_email_duplicado():
         finally:
             db.session.remove()
             db.drop_all()
+
+
+def test_cadastro_com_email_invalido():
+    app = criar_app_teste()
+
+    cliente = app.test_client()
+    resposta = cliente.post(
+        "/api/usuarios",
+        json={
+            "nome": "Usuario Teste",
+            "idade": 18,
+            "telefone": "84999999999",
+            "email": "email-invalido",
+            "senha": "SenhaTeste123",
+        },
+    )
+
+    assert resposta.status_code == 400
+    assert resposta.json["erro"] == "Informe um e-mail válido."
+
+
+def test_cadastro_com_senha_curta():
+    app = criar_app_teste()
+
+    cliente = app.test_client()
+    resposta = cliente.post(
+        "/api/usuarios",
+        json={
+            "nome": "Usuario Teste",
+            "idade": 18,
+            "telefone": "84999999999",
+            "email": "senha.curta@example.com",
+            "senha": "123",
+        },
+    )
+
+    assert resposta.status_code == 400
+    assert resposta.json["erro"] == (
+        "A senha deve ter entre 8 e 128 caracteres."
+    )
