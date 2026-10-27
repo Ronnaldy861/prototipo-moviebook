@@ -158,3 +158,41 @@ def test_cadastro_com_senha_curta():
     assert resposta.json["erro"] == (
         "A senha deve ter entre 8 e 128 caracteres."
     )
+
+def test_cadastro_com_idade_invalida():
+    app = criar_app_teste()
+    cliente = app.test_client()
+
+    resposta = cliente.post(
+        "/api/usuarios",
+        json={
+            "nome": "Usuario Teste",
+            "idade": 0,
+            "telefone": "84999999999",
+            "email": "idade.invalida@example.com",
+            "senha": "SenhaTeste123",
+        },
+    )
+
+    assert resposta.status_code == 400
+    assert resposta.json["erro"] == "Informe uma idade válida."
+
+
+def test_cadastro_sem_nome():
+    app = criar_app_teste()
+    cliente = app.test_client()
+
+    resposta = cliente.post(
+        "/api/usuarios",
+        json={
+            "idade": 18,
+            "telefone": "84999999999",
+            "email": "sem.nome@example.com",
+            "senha": "SenhaTeste123",
+        },
+    )
+
+    assert resposta.status_code == 400
+    assert resposta.json["erro"] == (
+        "Informe um nome entre 2 e 120 caracteres."
+    )

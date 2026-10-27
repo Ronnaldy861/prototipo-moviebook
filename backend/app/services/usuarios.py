@@ -1,3 +1,4 @@
+from sqlalchemy.exc import IntegrityError
 from werkzeug.security import generate_password_hash
 
 from app.extensions import db
@@ -59,6 +60,9 @@ def cadastrar_usuario(dados):
     try:
         db.session.add(usuario)
         db.session.commit()
+    except IntegrityError:
+        db.session.rollback()
+        return None, "Não foi possível cadastrar com esse e-mail."
     except Exception:
         db.session.rollback()
         raise
